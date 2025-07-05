@@ -5,6 +5,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [screen, setScreen] = useState("register");
+  // const [loginEmail, SetLoginEmail] = useState(null);
   const [user, setUser] = useState(null);
   const [data, setData] = useState({
     email: "",
@@ -34,7 +35,14 @@ export const UserProvider = ({ children }) => {
   }, [user]);
   return (
     <UserContext.Provider
-      value={{ data, setData, screen, setScreen, user, setUser }}
+      value={{
+        data,
+        setData,
+        screen,
+        setScreen,
+        user,
+        setUser,
+      }}
     >
       {children}
     </UserContext.Provider>

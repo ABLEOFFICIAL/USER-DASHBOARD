@@ -70,7 +70,7 @@ const MainBoard = () => {
   return (
     <main
       style={{ scrollbarWidth: "none" }}
-      className="h-screen overflow-x-hidden border-2 w-[100vw]"
+      className="h-screen overflow-x-hidden  w-[100vw]"
     >
       <div className="mx-auto max-w-[968px] px-5 my-12 flex flex-col gap-8">
         {/* Header Section */}
@@ -142,7 +142,7 @@ const MainBoard = () => {
             <div className="flex items-center gap-5 w-full md:w-auto">
               <Search className="bg-[#FAFBFF] w-full md:w-[216px]" />
               <div className="relative w-full md:w-[154px]">
-                <select className="h-[38px] w-full rounded-[12px] bg-[#FAFBFF] p-2 pl-10 shadow-md focus:outline-none text-xs font-semibold">
+                <select className="h-[38px] w-full rounded-[12px] bg-[#FAFBFF] p-2 pl-16 shadow-md focus:outline-none text-xs font-semibold">
                   <option value="new">Newest</option>
                   <option value="trend">Trending</option>
                 </select>

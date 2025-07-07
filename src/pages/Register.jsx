@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Remove from "../assets/IconRemove.png";
 import apple from "../assets/Apple.png";
 import facebook from "../assets/Facebook.png";
 import google from "../assets/Google.png";
 import check from "../assets/Icon_2.png";
 import view from "../assets/Icon_1.png";
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa6";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { UserContext } from "../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,8 +17,9 @@ import { CiSquareCheck } from "react-icons/ci";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, provider } from "../config/firebase";
 
 export const Xicon = () => {
   return (
@@ -28,7 +31,7 @@ export const Xicon = () => {
 
 const Register = () => {
   const { data, setData, screen, setScreen } = useContext(UserContext);
-  // const [remember, setRemember] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   // register
@@ -48,6 +51,23 @@ const Register = () => {
       navigate("/");
     } catch (error) {
       console.error(error);
+    }
+  };
+  // google sign up
+  const handleGoogleSignUp = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      alert("Signed in successfully with Google");
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing in with Google", error);
+      if (error.code === "auth/popup-blocked") {
+        alert(
+          "Popup was blocked by your browser. Please allow popups for this site and try again."
+        );
+      } else {
+        alert("An error occurred during Google sign-in. Please try again.");
+      }
     }
   };
 
@@ -80,7 +100,11 @@ const Register = () => {
         <div className="h-[48px] w-[176px] flex gap-[16px]">
           <img src={apple} className="cursor-pointer" />
           <img src={facebook} className="cursor-pointer" />
-          <img src={google} className="cursor-pointer" />
+          <img
+            onClick={handleGoogleSignUp}
+            src={google}
+            className="cursor-pointer"
+          />
         </div>
 
         {/* form */}
@@ -122,18 +146,57 @@ const Register = () => {
                     className="text-red-500 text-sm"
                   />
                 </div>
-                <div>
-                  <Field
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    className="w-full p-2 border-[1px] h-[56px] border-[#1a0710]/40 rounded  focus:outline-2 focus:outline-[#5932ea]"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
+                <div className="relative">
+                  <Field name="password">
+                    {({ field, meta }) => (
+                      <div className="relative">
+                        <input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className="w-full p-2 border-[1px] h-[56px] border-[#1a0710]/40 rounded focus:outline-2 focus:outline-[#5932ea]"
+                        />
+                        {meta.touched && meta.error && (
+                          <div className="text-red-500 text-sm">
+                            {meta.error}
+                          </div>
+                        )}
+
+                        <div className="absolute top-0 right-0 h-[56px] w-14 flex justify-center items-center">
+                          {showPassword ? (
+                            <FaRegEyeSlash
+                              onClick={() => setShowPassword(false)}
+                              className="size-5 text-neutral-600 cursor-pointer"
+                            />
+                          ) : (
+                            <FaRegEye
+                              onClick={() => setShowPassword(true)}
+                              className="size-5 text-neutral-600 cursor-pointer"
+                            />
+                          )}
+                        </div>
+
+                        {/* <span className="font-normal text-[13px] leading-[20px] text-[#1a0710]/65">
+                          8+ characters
+                        </span> */}
+                      </div>
+                    )}
+                  </Field>
+                  {/* {showPassword ? (
+                    <div className="absolute top-0 right-0 h-[56px] w-14 flex justify-center items-center">
+                      <FaRegEyeSlash
+                        onClick={hidePasskey}
+                        className="size-5 text-neutral-600 cursor-pointer"
+                      />
+                    </div>
+                  ) : (
+                    <div className="absolute top-0 right-0 h-[56px] w-14 flex justify-center items-center">
+                      <FaRegEye
+                        onClick={revealPasskey}
+                        className="size-5 text-neutral-600 cursor-pointer"
+                      />
+                    </div>
+                  )} */}
                   <span className="font-normal text-[13px] leading-[20px] text-[#1a0710]/65">
                     8+ characters
                   </span>

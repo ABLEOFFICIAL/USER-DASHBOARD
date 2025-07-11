@@ -19,7 +19,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { auth, provider } from "../config/firebase";
+import { auth, iphoneProvider, provider } from "../config/firebase";
 
 export const Xicon = () => {
   return (
@@ -70,6 +70,23 @@ const Register = () => {
       }
     }
   };
+  // apple sign up
+  const handleAppleSignUp = async () => {
+    try {
+      await signInWithPopup(auth, iphoneProvider);
+      alert("Signed in successfully with Apple");
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing in with Google", error);
+      if (error.code === "auth/popup-blocked") {
+        alert(
+          "Popup was blocked by your browser. Please allow popups for this site and try again."
+        );
+      } else {
+        alert("An error occurred during Google sign-in. Please try again.");
+      }
+    }
+  };
 
   return (
     <main className="bg-[#FBFBFB] flex justify-center items-center min-h-screen">
@@ -98,7 +115,11 @@ const Register = () => {
 
         {/* socials */}
         <div className="h-[48px] w-[176px] flex gap-[16px]">
-          <img src={apple} className="cursor-pointer" />
+          <img
+            onClick={handleAppleSignUp}
+            src={apple}
+            className="cursor-pointer"
+          />
           <img src={facebook} className="cursor-pointer" />
           <img
             onClick={handleGoogleSignUp}
